@@ -1,4 +1,6 @@
 import express from 'express';
+import mongoose from 'mongoose';
+import router from './routes/user.routes.js';import express from 'express';
 import handlebars from 'express-handlebars';
 import __dirname from './utils.js';
 import http from 'http';
@@ -15,6 +17,14 @@ const CartManager = new CM('./carts.json');
 
 
 app.use(express.json());
+app.use(express.urlencoded({extended:true}));
+
+
+mongoose.connect('mongodb+srv://Santi8695:5e1DsDkglu2Nj0cL@entregafinal.nhaomgs.mongodb.net/entregaFinal?retryWrites=true&w=majority&appName=entregaFinal')
+.then(()=>console.log("MongoDB conectado"))
+.catch(err=>console.log(err));
+
+app.use('/api/users', router);
 
 
 app.engine('handlebars', handlebars.engine()); // Configuramos Handlebars como motor de plantillas
@@ -156,12 +166,6 @@ app.post('/carts/:cid/product/:pid', async (req, res) => {
         res.status(500).json({ error: 'Error al agregar producto al carrito' });
     }
 });
-
-
-// app.listen(PORT, () => {
-//     console.log(`Servidor corriendo en http://localhost:${PORT}`);
-// });
-
 
 server.listen(PORT,()=>{
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
